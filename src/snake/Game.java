@@ -16,9 +16,13 @@ import javax.swing.JFrame;
 public class Game extends Canvas implements Runnable, KeyListener {
 
 	public Node[] nodeSnake = new Node[10];
-	public Boolean left, right, up, down;
+	public Boolean left = false;
+	public Boolean right = false;
+	public Boolean up = false;
+	public Boolean down = false;
 	public int score = 0;
-	public int applex=0,appley=0;
+	public int applex = 0, appley = 0;
+	public int speed = 1;
 
 	public Game() {
 		this.setPreferredSize(new Dimension(480, 480));
@@ -29,25 +33,38 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	}
 
 	public void tick() {
-		for (int i = nodeSnake.length - 1; i > 1; i--) {
+		for (int i = nodeSnake.length - 1; i > 0; i--) {
 			nodeSnake[i].x = nodeSnake[i - 1].x;
 			nodeSnake[i].y = nodeSnake[i - 1].y;
 		}
+		if (nodeSnake[0].x + 10 < 0) {
+			nodeSnake[0].x = 480;
+		} else if (nodeSnake[0].x >= 480) {
+			nodeSnake[0].x = -10;
+		}
+		if (nodeSnake[0].y + 10 < 0) {
+			nodeSnake[0].y = 240;
+		} else if (nodeSnake[0].y >= 480) {
+			nodeSnake[0].y = -10;
+		}
 
 		if (right) {
-			nodeSnake[0].x++;
+			nodeSnake[0].x += speed;
 		} else if (left) {
-			nodeSnake[0].x--;
+			nodeSnake[0].x -= speed;
 		} else if (up) {
-			nodeSnake[0].y--;
+			nodeSnake[0].y -= speed;
 		} else if (down) {
-			nodeSnake[0].y++;
+			nodeSnake[0].y += speed;
 		}
-		if(new Rectangle(nodeSnake[0].x,nodeSnake[0].y,10,10).intersects(new Rectangle(appley,applex,10,10)));
-		applex =new Random().nextInt(480-10);
-		appley =new Random().nextInt(480-10);
-		score++;
-		System.out.println("Pontos: " +score);
+		if (new Rectangle(nodeSnake[0].x, nodeSnake[0].y, 10, 10).intersects(new Rectangle(applex, appley, 15, 15))) {
+
+			applex = new Random().nextInt(480 - 10);
+			appley = new Random().nextInt(480 - 10);
+			score++;
+			speed++;
+			System.out.println("Pontos: " + score);
+		}
 	}
 
 	public void render() {
@@ -59,15 +76,15 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		Graphics g = bs.getDrawGraphics();
 		g.setColor(Color.black);
 		g.fillRect(0, 0, 480, 480);
+		g.setColor(Color.WHITE);
+		g.fillRect(applex, appley, 10, 10);
 		for (int i = 0; i < nodeSnake.length; i++) {
-			g.setColor(Color.blue);
+			g.setColor(Color.ORANGE);
 			g.fillRect(nodeSnake[i].x, nodeSnake[i].y, 10, 10);
 		}
-		g.setColor(Color.LIGHT_GRAY);
-		g.fillRect(applex,appley,10,10);
 
 		g.dispose();
-		bs.show(); 
+		bs.show();
 
 	}
 
@@ -101,6 +118,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			right = true;
 			left = false;
@@ -108,14 +129,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			down = false;
 		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			left = true;
+			right = false;
 			up = false;
 			down = false;
-			right = false;
 		} else if (e.getKeyCode() == KeyEvent.VK_UP) {
 			up = true;
-			down = false;
 			right = false;
 			left = false;
+			down = false;
 		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 			down = true;
 			right = false;
@@ -123,17 +144,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			up = false;
 
 		}
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 }
