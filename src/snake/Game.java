@@ -43,7 +43,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			nodeSnake[0].x = -10;
 		}
 		if (nodeSnake[0].y + 10 < 0) {
-			nodeSnake[0].y = 240;
+			nodeSnake[0].y = 480;
 		} else if (nodeSnake[0].y >= 480) {
 			nodeSnake[0].y = -10;
 		}
